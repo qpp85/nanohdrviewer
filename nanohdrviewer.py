@@ -21,6 +21,7 @@
 
 import os
 import array
+from time import sleep
 import numpy as np
 import cv2
 from PyQt5.QtCore import QDir, Qt, pyqtSignal, QMimeData, QFileSystemWatcher
@@ -97,6 +98,8 @@ class ImageLabel(QLabel):
 		return QImage(img, img.shape[1], img.shape[0], QImage.Format_RGB888)
 
 	def onFileChanged(self, path):
+		# ファイル書き込み完了よりフライングしてきてしまうので一瞬待つ
+		sleep(0.2)
 		if os.path.isfile(path):
 			self.load(path)
 		else:
