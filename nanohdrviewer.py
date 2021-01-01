@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 #
 #  nanohdrviewer : A simple HDR image viewer
@@ -82,16 +82,19 @@ class ImageLabel(QLabel):
 		return True
 
 	def loadHDRImage(self, filename):
-		# Load image
-		img = cv2.imread(filename)
+		# load image. -1を指定しないと勝手に255倍されてしまう
+		img = cv2.imread(filename, -1)
 		if img is None:
 			return None
-		
-		# HDR compression
-		imageArray_RGB8 = (np.clip(np.power(img, 1/2.2), 0, 1) * 255).astype(np.uint8)
-
+		# GBR to RGB
+		img = img[...,::-1].copy()
+		img = img.clip(0.0,1.0)
+		# to sRGB
+		img = np.where( img >= 0.0031308, 1.055 * (np.power(img, 1.0 / 2.4)) - 0.055,  12.92 * img )
+		# to bytes
+		img = (img*255.0).astype(np.uint8)
 		# Convert to QImage
-		return QImage(imageArray_RGB8.tostring(), img.shape[1], img.shape[0], QImage.Format_RGB888)
+		return QImage(img, img.shape[1], img.shape[0], QImage.Format_RGB888)
 
 	def onFileChanged(self, path):
 		if os.path.isfile(path):
