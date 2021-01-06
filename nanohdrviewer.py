@@ -135,8 +135,9 @@ class HDRImageViewer(QMainWindow):
 
 		# Title and initial window size
 		self.setWindowTitle("hdrviewer")
-		self.setFixedSize(200, 200)
 		self.setWindowFlags(Qt.WindowStaysOnTopHint)
+		self.setFixedSize(800, 800)
+		
 
 	def open(self):
 		filename, _ = QFileDialog.getOpenFileName(self, "Open File", QDir.currentPath(), "HDR Image (*.hdr, *.exr)")
